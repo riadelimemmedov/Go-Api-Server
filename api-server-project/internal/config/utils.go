@@ -1,11 +1,12 @@
 package config
 
 import (
-	"log"
 	"os"
 	"strings"
 
+	logger "github.com/riadalimemmedov/api-server-project/api-server-project/pkg/log"
 	"github.com/spf13/viper"
+	"go.uber.org/zap"
 )
 
 // ! Load loads the configuration from the specified config file based on the environment.
@@ -35,17 +36,17 @@ func Load() *Config {
 	// Read the specific config file
 	viper.SetConfigName(configFile)
 	if err := viper.ReadInConfig(); err != nil {
-		log.Printf("Error reading config file: %v\n", err)
+		logger.GetLogger().Error("Error reading config file: %v\n", zap.Error(err))
 	}
 
-	log.Printf("Using environment: %s", env)
-	log.Printf("Config file loaded: %s.yaml", configFile)
+	logger.GetLogger().Info("Using environment", zap.String("env", env))
+	logger.GetLogger().Info("Using config file", zap.String("configFile", configFile))
 
 	var config Config
 	if err := viper.Unmarshal(&config); err != nil {
-		log.Fatalf("Error unmarshalling config: %v", err)
+		logger.GetLogger().Error("Error unmarshalling config: %v", zap.Error(err))
 	}
-	log.Printf("Configuration loaded successfully")
+	logger.GetLogger().Info("Configuration loaded successfully")
 	return &config
 }
 
@@ -101,7 +102,7 @@ func _getConfigFilename(env string) string {
 	case "local":
 		return "config"
 	default:
-		log.Printf("Unknown environment: %s, using default config", env)
+		logger.GetLogger().Warn("Unknown environment: %s, using default config", zap.String("env", env))
 		return "config"
 	}
 }
