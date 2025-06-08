@@ -24,6 +24,11 @@ func SetupRouter() *gin.Engine {
 		api.GET("/orders", handlers.GetOrders)
 		api.POST("/orders", handlers.CreateOrder)
 		api.GET("/orders/:id", handlers.GetOrderByID)
+
+		// Users
+		api.GET("/users", handlers.GetUsers)
+		api.POST("/users", handlers.CreateUser)
+		api.GET("/users/:id", handlers.GetUserByID)
 	}
 	return r
 }
